@@ -309,3 +309,11 @@ Ba kiểm thử xác thực liên quan đều **passed**; các trường hợp u
 
 Các kiểm thử yêu cầu `/ask` trả 200 vẫn phụ thuộc phần `/ask` chưa triển khai trong app/main.py:127.
 
+================================== warnings summary ==================================
+tests/test_cp3.py::TestAuthentication::test_khong_co_key_thi_401
+  /home/palm/Desktop/vin_ai20k/K4-L3B-PhamDinhBaoKhoi-2A202602434-Cloud-Service-And-Deployment/.venv/lib/python3.14/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2`instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== 22 passed, 1 warning in 0.45s ============================
+
