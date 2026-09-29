@@ -73,6 +73,12 @@ class AskRequest(BaseModel):
 # ─────────────────────────────────────────────────────────────
 # Health & readiness
 # ─────────────────────────────────────────────────────────────
+from fastapi.responses import JSONResponse
+
+# Giả định file của bạn đã có các biến/import sau:
+# from app.config import SERVICE_NAME, SERVICE_VERSION (hoặc được định nghĩa sẵn)
+# from app import lifecycle
+
 @app.get("/health")
 def health():
     """Liveness probe — process còn sống không?
@@ -87,8 +93,17 @@ def health():
     lời câu hỏi "có cần restart container này không?". Nếu nó phụ thuộc
     Redis, Redis chết một nhịp là cả cụm container bị restart theo.
     """
-    raise NotImplementedError("TODO (CP1/CP4): cài đặt /health")
-
+    if lifecycle.shutting_down:
+        return JSONResponse(
+            status_code=503, 
+            content={"status": "shutting_down"}
+        )
+    
+    return {
+        "status": "ok",
+        "service": SERVICE_NAME,
+        "version": SERVICE_VERSION
+    }
 
 @app.get("/ready")
 def ready(store: ConversationStore = Depends(get_store)):

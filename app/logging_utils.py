@@ -34,4 +34,19 @@ def log_event(event: str, level: str = "info", **fields) -> str:
         >>> log_event("ask_completed", user_id="sv01", cost_usd=0.0001)
         '{"event": "ask_completed", "level": "info", "timestamp": "...", ...}'
     """
-    raise NotImplementedError("TODO (CP1): cài đặt log_event")
+    # Gom các field mặc định và fields bổ sung vào một dictionary
+    log_data = {
+        "event": event,
+        "level": level.lower(),
+        "timestamp": utc_now_iso(),
+        **fields
+    }
+    
+    # Dump ra JSON trên 1 dòng, giữ nguyên ký tự UTF-8 (tiếng Việt)
+    log_line = json.dumps(log_data, ensure_ascii=False)
+    
+    # In ra stdout để hệ thống log của cloud thu thập
+    print(log_line)
+    
+    # Trả về chuỗi JSON
+    return log_line
