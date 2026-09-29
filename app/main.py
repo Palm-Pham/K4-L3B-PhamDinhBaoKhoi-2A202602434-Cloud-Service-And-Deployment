@@ -107,17 +107,21 @@ def health():
 
 @app.get("/ready")
 def ready(store: ConversationStore = Depends(get_store)):
-    """Readiness probe — đã sẵn sàng nhận traffic chưa?
+    """Readiness probe: chỉ nhận traffic khi service và Redis sẵn sàng."""
+    if lifecycle.shutting_down:
+        return JSONResponse(status_code=503, content={"status": "shutting_down"})
 
-    TODO (CP4):
-      - Đang tắt dần → 503 ``{"status": "shutting_down"}``
-      - ``store.ping()`` False → 503 ``{"status": "not ready", "redis": False}``
-      - Ngược lại → ``{"status": "ready", "redis": True}``
+    try:
+        redis_ready = store.ping()
+    except Exception:
+        redis_ready = False
 
-    Khác /health ở chỗ: endpoint này ĐƯỢC PHÉP kiểm tra dependency. Load
-    balancer dùng nó để quyết định có đẩy request vào instance này không.
-    """
-    raise NotImplementedError("TODO (CP4): cài đặt /ready")
+    if not redis_ready:
+        return JSONResponse(
+            status_code=503, content={"status": "not ready", "redis": False}
+        )
+
+    return {"status": "ready", "redis": True}
 
 
 # ─────────────────────────────────────────────────────────────

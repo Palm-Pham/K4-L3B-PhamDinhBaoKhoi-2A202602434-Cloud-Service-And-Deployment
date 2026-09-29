@@ -317,3 +317,23 @@ tests/test_cp3.py::TestAuthentication::test_khong_co_key_thi_401
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
 =========================== 22 passed, 1 warning in 0.45s ============================
 
+### cp4: 
+Đã hoàn thành phân biệt liveness và readiness trong app/main.py:83: `/health` không kiểm tra Redis; `/ready` trả **503** khi service đang shutdown hoặc Redis lỗi, và **200** khi Redis sẵn sàng.
+
+app/lifecycle.py:25 đăng ký SIGTERM/SIGINT, lưu handler cũ, đặt `shutting_down=True` và gọi lại handler cũ nếu callable. Signal handler không tự gọi mạng.
+
+**19/19 kiểm thử CP4 passed.** Sau khi rebuild, cả `/health` và `/ready` trả 200; agent và Redis đều `healthy`.
+
+- test resault:
+==================================== warnings summary =====================================
+tests/test_cp4.py::TestStateless::test_lich_su_duoc_dung_lai_giua_cac_request
+  /home/palm/Desktop/vin_ai20k/K4-L3B-PhamDinhBaoKhoi-2A202602434-Cloud-Service-And-Deployment/.venv/lib/python3.14/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+============================== 19 passed, 1 warning in 0.39s ==============================
+The warning means Starlette’s test client found `httpx` but not `httpx2`, so it used a deprecated fallback. It did not indicate a CP4 failure. [Starlette recommends installing `httpx2`](<https://starlette.dev/testclient/>).
+
+I added `httpx2>=2.0,<3` to requirements.txt and installed it in the current `.venv`. I kept `httpx` because other tests import it directly.
+
+**Verification:** CP3 and CP4 now report **41 passed, with no test warning**. For another environment, run `pip install -r requirements.txt`.

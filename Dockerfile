@@ -15,7 +15,6 @@ COPY utils ./utils
 RUN useradd --create-home --uid 10001 appuser
 USER appuser
 
-ENV PORT=8000
 EXPOSE 8000
 
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
