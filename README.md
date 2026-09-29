@@ -337,3 +337,10 @@ The warning means Starlette’s test client found `httpx` but not `httpx2`, so i
 I added `httpx2>=2.0,<3` to requirements.txt and installed it in the current `.venv`. I kept `httpx` because other tests import it directly.
 
 **Verification:** CP3 and CP4 now report **41 passed, with no test warning**. For another environment, run `pip install -r requirements.txt`.
+
+### cp5:
+Railway setup is complete. The `day12-agent` project has running `Redis` and `agent` services, and the agent is available at [**https://agent-production-2ea3.up.railway.app**](<https://agent-production-2ea3.up.railway.app>).
+
+I installed the CLI under your user account, configured the required agent variables, deployed from the Dockerfile, and updated DEPLOYMENT.md and the Railway instructions (LAB\_GUIDE.md:531). The API key is in Railway and your ignored local `.env`; it is not in the repository.
+
+Live checks passed: `/health` and `/ready` return 200, `/ask` returns 401 without a key and 200 with the key, and the rate limit returns 429 with `Retry-After`. CP5 reports **9 passed, 4 skipped**. The four skipped tests apply only to the unused local fallback mode.

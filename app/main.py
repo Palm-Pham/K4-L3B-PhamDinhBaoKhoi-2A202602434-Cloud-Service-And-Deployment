@@ -17,7 +17,7 @@ from contextlib import asynccontextmanager
 from functools import lru_cache
 
 from fastapi import Depends, FastAPI
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 from pydantic import BaseModel, Field
 
 from utils.mock_llm import ask_llm
@@ -66,6 +66,12 @@ async def lifespan(_app: FastAPI):
 app = FastAPI(title="Day 12 Production Agent", version=SERVICE_VERSION, lifespan=lifespan)
 
 
+@app.get("/", include_in_schema=False)
+def index():
+    """Open the interactive API documentation from the public root URL."""
+    return RedirectResponse(url="/docs")
+
+
 class AskRequest(BaseModel):
     question: str = Field(min_length=1, max_length=2000)
 
@@ -73,7 +79,6 @@ class AskRequest(BaseModel):
 # ─────────────────────────────────────────────────────────────
 # Health & readiness
 # ─────────────────────────────────────────────────────────────
-from fastapi.responses import JSONResponse
 
 # Giả định file của bạn đã có các biến/import sau:
 # from app.config import SERVICE_NAME, SERVICE_VERSION (hoặc được định nghĩa sẵn)

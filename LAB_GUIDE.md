@@ -535,19 +535,19 @@ npm i -g @railway/cli
 railway login
 railway init                       # đặt tên project
 railway add --database redis       # tạo Redis, tự sinh biến REDIS_URL
+railway add --service agent        # tạo service chạy ứng dụng
 
-railway variables --set AGENT_API_KEY=<khóa của bạn> \
-                  --set RATE_LIMIT_PER_MINUTE=10 \
-                  --set MONTHLY_BUDGET_USD=10.0 \
-                  --set LOG_LEVEL=INFO
+railway variable set RATE_LIMIT_PER_MINUTE=10 MONTHLY_BUDGET_USD=10.0 LOG_LEVEL=INFO --service agent
 
-railway up                         # build từ Dockerfile và deploy
-railway domain                     # sinh URL công khai
-railway logs                       # xem log khi có sự cố
+railway up --service agent         # build từ Dockerfile và deploy
+railway domain --service agent     # sinh URL công khai
+railway logs --service agent       # xem log khi có sự cố
 ```
 
-Kiểm tra biến `REDIS_URL` đã được gắn vào service agent chưa (dashboard →
-service → Variables). Railway tự set `PORT` — đừng ghi đè.
+Trong dashboard → service `agent` → Variables, đặt `AGENT_API_KEY` bằng secret và
+`REDIS_URL` bằng reference `${{Redis.REDIS_URL}}` (đổi `Redis` nếu tên service
+khác). Không đặt khóa trong lệnh shell hoặc repo. Railway tự set `PORT` — đừng
+ghi đè.
 
 ### Đường Render
 
