@@ -83,6 +83,48 @@ POST /ask có X-API-Key hợp lệ → 200, có answer, cost_usd, history_length
 12 POST /ask cùng user trong 60 giây → 10 lần 200, 2 lần 429; Retry-After: 60
 ```
 
+output:
+'''
+HTTP/2 200 
+content-type: application/json
+date: Tue, 29 Sep 2026 05:41:04 GMT
+server: railway-hikari
+x-railway-request-id: T0zn87I6SxC3tCgxnpoFkQ
+content-length: 57
+x-hikari-trace: hkg1.hn7d
+x-railway-edge: hkg1
+
+{"status":"ok","service":"day12-agent","version":"1.0.0"}HTTP/2 200 
+content-type: application/json
+date: Tue, 29 Sep 2026 05:41:05 GMT
+server: railway-hikari
+x-railway-request-id: znJoDE8qTSKhpNIlwUFZXw
+content-length: 31
+x-hikari-trace: hkg1.aebn
+x-railway-edge: hkg1
+
+{"status":"ready","redis":true}HTTP/2 401 
+content-type: application/json
+date: Tue, 29 Sep 2026 05:41:06 GMT
+server: railway-hikari
+x-railway-request-id: 2q7QIaNlQD-qGQUXLPU1MQ
+content-length: 39
+x-hikari-trace: hkg1.hn7d
+x-railway-edge: hkg1
+
+{"detail":"invalid or missing API key"}HTTP/2 401 
+content-type: application/json
+date: Tue, 29 Sep 2026 05:41:07 GMT
+server: railway-hikari
+x-railway-request-id: 0qkDL9xGQ7Sfgsp2nPRhug
+content-length: 39
+x-hikari-trace: hkg1.hn7d
+x-railway-edge: hkg1
+
+{"detail":"invalid or missing API key"}401 401 401 401 401 401 401 401 401 401 401 401 401 401 401 
+'''
+
+
 ## Ảnh Chụp Màn Hình
 
 Ảnh dashboard và `/health` có thể lưu trong `screenshots/` khi cần nộp bài.
