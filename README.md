@@ -286,3 +286,26 @@ Nộp **link repository** lên Codelab. Repo phải ở chế độ public.
 - [ ] Không còn `NotImplementedError` nào trong `app/`
 - [ ] Có commit ở nhiều mốc thời gian, không phải một commit duy nhất
 - [ ] *(Bonus)* `.github/workflows/ci.yml` chạy xanh, README có badge `passing`
+
+## note:
+- small note for CP2: 
+
+Hai bài bị `SKIPPED` vì tests/test\_cp2.py:193 chỉ chạy chúng khi `docker info` thành công. Phiên shell ban đầu không truy cập được Docker daemon, nên pytest bỏ qua bài build và kiểm tra dung lượng image.
+
+Tôi đã chạy lại dưới nhóm `docker` và sửa thêm lỗi khởi động trong app/lifecycle.py. Kết quả hiện tại: **16 passed, 0 skipped**. Image `day12-agent:prod` là **271 MB**; agent và Redis đều `healthy`; `/health` trả HTTP 200.
+
+Để chạy lại trong shell hiện tại:
+
+```
+sg docker -c '.venv/bin/pytest tests/test_cp2.py -v'
+```
+
+Khi shell của bạn đã có quyền truy cập Docker (`docker info` thành công), lệnh `pytest tests/test_cp2.py -v` cũng sẽ chạy cả 16 bài.
+
+### CP3:
+Đã hoàn thành xác thực trong app/auth.py: đọc `X-API-Key`, so sánh với `AGENT_API_KEY` bằng `secrets.compare_digest`, trả 401 khi thiếu hoặc sai key, và trả `X-User-Id` hoặc `anonymous` khi hợp lệ. Key không phải ASCII cũng được xử lý như key sai thay vì gây lỗi server.
+
+Ba kiểm thử xác thực liên quan đều **passed**; các trường hợp user ID và anonymous cũng đã được kiểm tra qua FastAPI. Tôi đã rebuild service đang chạy và xác nhận yêu cầu không có key trả **401**, còn `/health` trả **200**.
+
+Các kiểm thử yêu cầu `/ask` trả 200 vẫn phụ thuộc phần `/ask` chưa triển khai trong app/main.py:127.
+
